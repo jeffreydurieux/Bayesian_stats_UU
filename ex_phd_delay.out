@@ -1,0 +1,347 @@
+Mplus VERSION 8.5
+MUTHEN & MUTHEN
+08/23/2021   2:33 PM
+
+INPUT INSTRUCTIONS
+
+  ! Tutorial link: https://www.rensvandeschoot.com/regression-in-mplus-bayesian/
+
+  ! Check data
+
+  !TITLE: Bayesian analysis summary
+  !DATA: FILE IS "\\Client\C$\Users\jeffreydurieux\Documents\phd-delays_nonames.csv";
+  !VARIABLE: NAMES ARE diff child sex Age Age2;
+  !USEVARIABLES ARE diff Age Age2;
+  !OUTPUT: sampstat;
+
+
+  ! Run a bayesian multiple regression: diff = intercept + age * b1 + age^2 * b2
+  ! after MODEL: the model is specified.
+  ! note: default priors are used
+  ! in Mplus the defaults are beta ~ N(0,inf) meaning prior variance of the
+  ! entire parameter space
+  ! the prior for residual var is inverse gamma (-1, 0)
+
+  TITLE: Bayesian analysis with default priors
+  DATA: FILE IS "\\Client\C$\Users\jeffreydurieux\Documents\phd-delays_nonames.csv";
+
+  VARIABLE: NAMES ARE diff child sex Age Age2; ! All the variables in the dataset
+
+  USEVARIABLES ARE diff Age Age2; ! The variables we use in this analysis
+
+  ANALYSIS:
+  ESTIMATOR IS bayes; ! Specify that we want to use a Bayesian analysis
+  Bseed = 23082018; !specify a seed value for reproducing the results
+  CHAINS = 3; ! set the number of chains we want to use
+
+  MODEL:
+  [diff] (intercept);       ! specify that we want an intercept
+  ! this model would also work without this line, but this way it is possible to easily set
+  diff ON Age (Beta_Age);   ! Regression coefficient 1.
+  diff ON Age2(Beta_Age2);  ! Regression coefficient 2
+  ! You need to name these regression coefficients to later set priors
+  diff (e);                 ! Error variance
+
+  ! user specified priors
+  ! age ~ N(3, 0.4)
+  ! age^2 N(0,0.1)
+  MODEL PRIORS:
+      Beta_Age ~ N(20, .4);
+      Beta_Age2 ~ N(20, .1);
+
+  OUTPUT: tech8;
+  PLOT: type is plot2;
+  ! relative bias: 100% * (model informative prior - model uninformative prior) / model unin
+
+
+
+
+
+
+*** WARNING
+  Input line exceeded 90 characters. Some input may be truncated.
+  ! this model would also work without this line, but this way it is possible to easily set a
+*** WARNING
+  Input line exceeded 90 characters. Some input may be truncated.
+  ! relative bias: 100% * (model informative prior - model uninformative prior) / model uninf
+   2 WARNING(S) FOUND IN THE INPUT INSTRUCTIONS
+
+
+
+Bayesian analysis with default priors
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                         333
+
+Number of dependent variables                                    1
+Number of independent variables                                  2
+Number of continuous latent variables                            0
+
+Observed dependent variables
+
+  Continuous
+   DIFF
+
+Observed independent variables
+   AGE         AGE2
+
+
+Estimator                                                    BAYES
+Specifications for Bayesian Estimation
+  Point estimate                                            MEDIAN
+  Number of Markov chain Monte Carlo (MCMC) chains               3
+  Random seed for the first chain                         23082018
+  Starting value information                           UNPERTURBED
+  Algorithm used for Markov chain Monte Carlo           GIBBS(PX1)
+  Convergence criterion                                  0.500D-01
+  Maximum number of iterations                               50000
+  K-th iteration used for thinning                               1
+
+Input data file(s)
+  \\Client\C$\Users\jeffreydurieux\Documents\phd-delays_nonames.csv
+Input data format  FREE
+
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     DIFF                  9.967       2.217     -31.000    0.30%       0.000      3.000      5.000
+             333.000     207.636       5.977      91.000    0.30%       7.000     16.000
+     AGE                  31.676       4.472      26.000    1.80%      28.000     29.000     30.000
+             333.000      46.868      25.162      80.000    0.90%      31.000     33.000
+     AGE2               1050.216       6.056     676.000    1.80%     784.000    841.000    900.000
+             333.000  429560.007      42.483    6400.000    0.90%     961.000   1089.000
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+     USE THE FBITERATIONS OPTION TO INCREASE THE NUMBER OF ITERATIONS BY A FACTOR
+     OF AT LEAST TWO TO CHECK CONVERGENCE AND THAT THE PSR VALUE DOES NOT INCREASE.
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                               4
+
+Bayesian Posterior Predictive Checking using Chi-Square
+
+          95% Confidence Interval for the Difference Between
+          the Observed and the Replicated Chi-Square Values
+
+                                159.719           276.209
+
+          Posterior Predictive P-Value              0.000
+
+          Prior Posterior Predictive P-Value        0.000
+
+Information Criteria
+
+          Deviance (DIC)                         2943.480
+          Estimated Number of Parameters (pD)      11.060
+          Bayesian (BIC)                         2943.778
+
+RMSEA (Root Mean Square Error Of Approximation)
+
+          Estimate                           0.827
+          90 Percent C.I.                    0.689  0.880
+          Probability RMSEA <= .05           0.000
+
+CFI/TLI
+
+          CFI                                0.000
+          90 Percent C.I.                    0.000  0.000
+
+          TLI                                0.000
+          90 Percent C.I.                    0.000  0.000
+
+
+
+MODEL RESULTS
+
+                                Posterior  One-Tailed         95% C.I.
+                    Estimate       S.D.      P-Value   Lower 2.5%  Upper 2.5%  Significance
+
+ DIFF       ON
+    AGE               12.962       0.718      0.000      11.392      14.276      *
+    AGE2              -0.131       0.008      0.000      -0.147      -0.116      *
+
+ Intercepts
+    DIFF            -263.107      14.973      0.000    -292.718    -233.873      *
+
+ Residual Variances
+    DIFF             382.674      40.765      0.000     309.479     462.696      *
+
+
+TECHNICAL 1 OUTPUT
+
+
+     PARAMETER SPECIFICATION
+
+
+           NU
+              DIFF          AGE           AGE2
+              ________      ________      ________
+                    0             0             0
+
+
+           LAMBDA
+              DIFF          AGE           AGE2
+              ________      ________      ________
+ DIFF               0             0             0
+ AGE                0             0             0
+ AGE2               0             0             0
+
+
+           THETA
+              DIFF          AGE           AGE2
+              ________      ________      ________
+ DIFF               0
+ AGE                0             0
+ AGE2               0             0             0
+
+
+           ALPHA
+              DIFF          AGE           AGE2
+              ________      ________      ________
+                    1             0             0
+
+
+           BETA
+              DIFF          AGE           AGE2
+              ________      ________      ________
+ DIFF               0             2             3
+ AGE                0             0             0
+ AGE2               0             0             0
+
+
+           PSI
+              DIFF          AGE           AGE2
+              ________      ________      ________
+ DIFF               4
+ AGE                0             0
+ AGE2               0             0             0
+
+
+     STARTING VALUES
+
+
+           NU
+              DIFF          AGE           AGE2
+              ________      ________      ________
+                0.000         0.000         0.000
+
+
+           LAMBDA
+              DIFF          AGE           AGE2
+              ________      ________      ________
+ DIFF           1.000         0.000         0.000
+ AGE            0.000         1.000         0.000
+ AGE2           0.000         0.000         1.000
+
+
+           THETA
+              DIFF          AGE           AGE2
+              ________      ________      ________
+ DIFF           0.000
+ AGE            0.000         0.000
+ AGE2           0.000         0.000         0.000
+
+
+           ALPHA
+              DIFF          AGE           AGE2
+              ________      ________      ________
+                9.967         0.000         0.000
+
+
+           BETA
+              DIFF          AGE           AGE2
+              ________      ________      ________
+ DIFF           0.000         0.000         0.000
+ AGE            0.000         0.000         0.000
+ AGE2           0.000         0.000         0.000
+
+
+           PSI
+              DIFF          AGE           AGE2
+              ________      ________      ________
+ DIFF         103.818
+ AGE            0.000        23.434
+ AGE2           0.000         0.000    214780.000
+
+
+
+     PRIORS FOR ALL PARAMETERS            PRIOR MEAN      PRIOR VARIANCE     PRIOR STD. DEV.
+
+     Parameter 1~N(0.000,infinity)           0.0000            infinity            infinity
+     Parameter 2~N(20.000,0.400)            20.0000              0.4000              0.6325
+     Parameter 3~N(20.000,0.100)            20.0000              0.1000              0.3162
+     Parameter 4~IG(-1.000,0.000)          infinity            infinity            infinity
+
+
+TECHNICAL 8 OUTPUT
+
+
+   TECHNICAL 8 OUTPUT FOR BAYES ESTIMATION
+
+     CHAIN    BSEED
+     1        23082018
+     2        147894
+     3        830180
+
+     Iterations for computing PPPP
+
+                     POTENTIAL       PARAMETER WITH
+     ITERATION    SCALE REDUCTION      HIGHEST PSR
+     100              1.012               3
+
+     Iterations for model estimation
+
+                     POTENTIAL       PARAMETER WITH
+     ITERATION    SCALE REDUCTION      HIGHEST PSR
+     100              1.009               4
+
+
+PLOT INFORMATION
+
+The following plots are available:
+
+  Bayesian posterior parameter distributions
+  Bayesian posterior parameter trace plots
+  Bayesian autocorrelation plots
+  Bayesian prior parameter distributions
+  Bayesian posterior predictive checking scatterplots
+  Bayesian posterior predictive checking distribution plots
+
+DIAGRAM INFORMATION
+
+  Use View Diagram under the Diagram menu in the Mplus Editor to view the diagram.
+  If running Mplus from the Mplus Diagrammer, the diagram opens automatically.
+
+  Diagram output
+    \\client\h$\documents\bayesian_stats_uu\bayesian_stats_uu\ex_phd_delay.dgm
+
+     Beginning Time:  14:33:31
+        Ending Time:  14:33:58
+       Elapsed Time:  00:00:27
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2020 Muthen & Muthen

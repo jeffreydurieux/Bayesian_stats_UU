@@ -1,0 +1,51 @@
+! Tutorial link: https://www.rensvandeschoot.com/regression-in-mplus-bayesian/
+
+! Check data
+
+!TITLE: Bayesian analysis summary
+!DATA: FILE IS "\\Client\C$\Users\jeffreydurieux\Documents\phd-delays_nonames.csv";
+!VARIABLE: NAMES ARE diff child sex Age Age2;
+!USEVARIABLES ARE diff Age Age2;
+!OUTPUT: sampstat;
+
+
+! Run a bayesian multiple regression: diff = intercept + age * b1 + age^2 * b2
+! after MODEL: the model is specified. 
+! note: default priors are used
+! in Mplus the defaults are beta ~ N(0,inf) meaning prior variance of the 
+! entire parameter space
+! the prior for residual var is inverse gamma (-1, 0)
+
+TITLE: Bayesian analysis with default priors
+DATA: FILE IS "\\Client\C$\Users\jeffreydurieux\Documents\phd-delays_nonames.csv";
+
+VARIABLE: NAMES ARE diff child sex Age Age2; ! All the variables in the dataset
+
+USEVARIABLES ARE diff Age Age2; ! The variables we use in this analysis
+
+ANALYSIS:
+ESTIMATOR IS bayes; ! Specify that we want to use a Bayesian analysis
+Bseed = 23082018; !specify a seed value for reproducing the results
+CHAINS = 3; ! set the number of chains we want to use
+
+MODEL: 
+[diff] (intercept);       ! specify that we want an intercept
+! this model would also work without this line, but this way it is possible to easily set a prior
+diff ON Age (Beta_Age);   ! Regression coefficient 1. 
+diff ON Age2(Beta_Age2);  ! Regression coefficient 2 
+! You need to name these regression coefficients to later set priors
+diff (e);                 ! Error variance
+
+! user specified priors
+! age ~ N(3, 0.4)
+! age^2 N(0,0.1)
+MODEL PRIORS:
+    Beta_Age ~ N(20, .4);
+    Beta_Age2 ~ N(20, .1);
+
+OUTPUT: tech8;
+PLOT: type is plot2;
+! relative bias: 100% * (model informative prior - model uninformative prior) / model uninformative
+
+
+
